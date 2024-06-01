@@ -390,5 +390,3 @@ we eat
 							- [ ] poster annonce galaxy a24
 							- [ ] finir CV 2 versions
 							- [x] récupérer tel corentin
-
-+ [ ] **next week**

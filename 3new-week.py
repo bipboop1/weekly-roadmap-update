@@ -16,7 +16,6 @@ def find_last_week(lines):
     last_week_number = 0
     last_week_start_date = None
     last_week_end_date = None
-    current_year = datetime.now().year
 
     for i, line in enumerate(lines):
         week_match = week_pattern.match(line)
@@ -25,8 +24,11 @@ def find_last_week(lines):
             last_week_number = int(week_match.group(1))
         date_match = date_pattern.match(line)
         if date_match:
-            last_week_start_date = datetime.strptime(f"{date_match.group(1)}/{current_year}", '%d/%m/%Y')
-            last_week_end_date = datetime.strptime(f"{date_match.group(2)}/{current_year}", '%d/%m/%Y')
+            current_year = datetime.now().year
+            start_date_str, end_date_str = date_match.group(1), date_match.group(2)
+            last_week_start_date = datetime.strptime(f"{start_date_str}/{current_year}", '%d/%m/%Y')
+            last_week_end_date = datetime.strptime(f"{end_date_str}/{current_year}", '%d/%m/%Y')
+            
             # Adjust year if needed (handle year transition)
             if last_week_start_date > datetime.now():
                 last_week_start_date = last_week_start_date.replace(year=current_year - 1)
@@ -74,6 +76,10 @@ def main(file_path):
     lines = read_markdown_file(file_path)
     
     last_week_index, last_week_number, last_week_start_date, last_week_end_date = find_last_week(lines)
+    if last_week_index is None:
+        print("No previous week found in the file.")
+        return
+
     task_lines = copy_last_week_tasks(lines, last_week_index)
     new_week_section = create_new_week_section(last_week_number, last_week_end_date, task_lines)
     
